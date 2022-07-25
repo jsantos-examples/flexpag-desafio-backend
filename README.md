@@ -10,7 +10,7 @@ O objetivo deste desafio é avaliar suas habilidades em programação.
 Quando concluir o desafio, basta responder o e-mail onde recebeu o link do repositório.
 Em seguida, enviaremos o feedback e as instruções dos próximos passos!
 
-Caso tenha alguma dúvida, nós estamos disponíveis no email *email@flexpag*
+Caso tenha alguma dúvida, nós estamos disponíveis para tirá-las.
 Bom desafio!
 
 > ⚠️ **É importante que o seu repo esteja público, caso contrário não iremos conseguir avaliar sua resposta**
@@ -20,14 +20,12 @@ Bom desafio!
 - [🧠 Contexto](#-contexto)
   - [🚰 Fluxo esperado](#-fluxo-esperado)
 - [✔️ Critérios de Avaliação](#️-critérios-de-avaliação)
-  - [😎 Seria legal](#-seria-legal)
 - [:rocket: Instruções](#rocket-instruções)
-  - [Placeholder](#placeholder)
   - [:notebook: To-do list](#notebook-to-do-list)
 
 # 🧠 Contexto
 
-A Flexpag trabalha para melhorar as soluções de pagamentos dos nossos clientes, levando flexibilidade e inovação às nossas plataformas. Sabendo disso, montamos um desafio que consiste em criar um projeto para implementar um serviço de pagamento.
+A Flexpag é uma empresa de tecnologia especializada em soluções digitais de pagamento. Sabendo disso, montamos um desafio que consiste em implementar um serviço de pagamento agendando.
 
 ### 🚰 Fluxo esperado
 
@@ -41,28 +39,53 @@ A Flexpag trabalha para melhorar as soluções de pagamentos dos nossos clientes
 
 Além dos requisitos levantados acima, iremos olhar para os seguintes critérios durante a correção do desafio:
 
-- Eficiência e simplicidade
-
-### 😎 Seria legal
-
-- **placeholder**
+- Eficiência e simplicidade;
 
 ## :rocket: Instruções
 
 Chegou a hora de colocar a mão na massa!
 
-### Placeholder
+### Aplicação
 
-| placeholder | placeholder |
+A aplicação já está com o pre setup default. 
+
+**dependências:**
+- spring-boot-starter-web
+- spring-boot-starter-data-jpa
+- spring-boot-devtools
+- h2
+- lombok
+
+| componente | porta |
 | --------- | ----------- |
-| Postgres  | `5432:5432` |
+| Aplicação  | `8080` |
 
-```placeholder
-placeholder
+aplication.yaml foi configurado para apontar para o banco local h2
+```
+spring:
+  datasource:
+    driverClassName: org.h2.Driver
+    url: jdbc:h2:mem:payment-scheduler
+    username: admin
+    password: admin
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
 ```
 
 ### :notebook: To-do list
 - [ ] Fazer o fork do projeto
+- [ ] Implementar solução
+- [ ] Enviar link do projeto
 
 :information_source: _Sinta-se livre para incluir quaisquer observações que achar necessário_
 
