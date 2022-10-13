@@ -69,12 +69,25 @@ public class PaymentSchedulerController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body("");
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Object> updatePaymentScheduler() {
+    @PatchMapping("/{id}")
+    public ResponseEntity<Object> updatePaymentScheduler(@PathVariable(value = "id") UUID id, @RequestBody @Valid PaymentSchedulerDto paymentSchedulerDto) {
+        var verifyDate = ChronoUnit.MINUTES.between(LocalDateTime.now(), paymentSchedulerDto.getSchedulingDate());
+
+        if (verifyDate < 0) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("invalid scheduling date");
+        }
+
         Optional<PaymentSchedulerModel> paymentSchedulerModelOptional = paymentSchedulerService.findById(id);
         if (!paymentSchedulerModelOptional.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Scheduling not found");
         }
+        if (paymentSchedulerModelOptional.get().getStatus() == "paid") {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Payment has already been made");
+        }
+        var paymentSchedulerModel = paymentSchedulerModelOptional.get();
+        paymentSchedulerModel.setNamePayment(paymentSchedulerDto.getNamePayment());
+        paymentSchedulerModel.setSchedulingDate(paymentSchedulerDto.getSchedulingDate());
+        return ResponseEntity.status(HttpStatus.OK).body(paymentSchedulerService.save(paymentSchedulerModel));
     }
 
 }
