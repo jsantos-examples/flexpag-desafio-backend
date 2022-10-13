@@ -5,10 +5,11 @@ import java.util.Optional;
 import java.util.UUID;
 
 import javax.transaction.Transactional;
+
+import com.flexpag.paymentscheduler.repositories.PaymentSchedulerRepository;
 import org.springframework.stereotype.Service;
 
 import com.flexpag.paymentscheduler.models.PaymentSchedulerModel;
-import com.flexpag.paymentscheduler.repositories.PaymentSchedulerRepository;
 
 @Service
 public class PaymentSchedulerService {
@@ -21,8 +22,8 @@ public class PaymentSchedulerService {
 
     @Transactional
     public UUID save(PaymentSchedulerModel paymentSchedulerModel) {
-        paymentSchedulerRepository.save(paymentSchedulerModel);
-        return paymentSchedulerModel.getId();
+        var result = paymentSchedulerRepository.save(paymentSchedulerModel);
+        return result.getId();
     }
 
     public List<PaymentSchedulerModel> findAll() {

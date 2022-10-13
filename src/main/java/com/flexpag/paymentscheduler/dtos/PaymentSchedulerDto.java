@@ -13,4 +13,5 @@ public class PaymentSchedulerDto {
 
     @NotBlank
     private LocalDateTime schedulingDate;
+
 }

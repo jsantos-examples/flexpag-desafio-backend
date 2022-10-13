@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @EnableScheduling
 public class PaymentSchedulerApplication {
-
 	public static void main(String[] args) {
 		SpringApplication.run(PaymentSchedulerApplication.class, args);
 	}

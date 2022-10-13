@@ -13,7 +13,6 @@ import java.time.temporal.ChronoUnit;
 import javax.validation.Valid;
 
 import org.springframework.beans.BeanUtils;
-import org.springframework.core.CoroutinesUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -63,8 +62,19 @@ public class PaymentSchedulerController {
         if (!paymentSchedulerModelOptional.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Scheduling not found");
         }
+        if (paymentSchedulerModelOptional.get().getStatus() == "paid") {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Payment has already been made");
+        }
         paymentSchedulerService.delete(paymentSchedulerModelOptional.get());
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body("");
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Object> updatePaymentScheduler() {
+        Optional<PaymentSchedulerModel> paymentSchedulerModelOptional = paymentSchedulerService.findById(id);
+        if (!paymentSchedulerModelOptional.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Scheduling not found");
+        }
     }
 
 }
