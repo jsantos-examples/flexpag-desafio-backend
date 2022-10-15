@@ -1,15 +1,13 @@
 package com.flexpag.paymentscheduler.services;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-
-import javax.transaction.Transactional;
-
+import com.flexpag.paymentscheduler.models.PaymentSchedulerModel;
 import com.flexpag.paymentscheduler.repositories.PaymentSchedulerRepository;
 import org.springframework.stereotype.Service;
 
-import com.flexpag.paymentscheduler.models.PaymentSchedulerModel;
+import javax.transaction.Transactional;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class PaymentSchedulerService {
@@ -31,12 +29,15 @@ public class PaymentSchedulerService {
     }
 
     public Optional<PaymentSchedulerModel> findById(UUID id) {
-        System.out.print(id);
         return paymentSchedulerRepository.findById(id);
     }
 
     public void delete(PaymentSchedulerModel paymentSchedulerModel) {
         paymentSchedulerRepository.delete(paymentSchedulerModel);
+    }
+
+    public PaymentSchedulerModel update(PaymentSchedulerModel paymentSchedulerModel) {
+        return paymentSchedulerRepository.save(paymentSchedulerModel);
     }
 
     

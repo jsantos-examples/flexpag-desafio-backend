@@ -1,11 +1,9 @@
 package com.flexpag.paymentscheduler.models;
 
 import lombok.Data;
-
-import javax.persistence.*;
-
 import org.hibernate.annotations.Type;
 
+import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.UUID;

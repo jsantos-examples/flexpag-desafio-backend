@@ -3,19 +3,17 @@ package com.flexpag.paymentscheduler.controllers;
 import com.flexpag.paymentscheduler.dtos.PaymentSchedulerDto;
 import com.flexpag.paymentscheduler.models.PaymentSchedulerModel;
 import com.flexpag.paymentscheduler.services.PaymentSchedulerService;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-
-import javax.validation.Valid;
-
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -32,7 +30,7 @@ public class PaymentSchedulerController {
         var verifyDate = ChronoUnit.MINUTES.between(LocalDateTime.now(), paymentSchedulerDto.getSchedulingDate());
 
         if (verifyDate < 0) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("invalid scheduling date");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("invalid scheduling date");
         }
 
         var paymentSchedulerModel = new PaymentSchedulerModel();
@@ -74,7 +72,7 @@ public class PaymentSchedulerController {
         var verifyDate = ChronoUnit.MINUTES.between(LocalDateTime.now(), paymentSchedulerDto.getSchedulingDate());
 
         if (verifyDate < 0) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("invalid scheduling date");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("invalid scheduling date");
         }
 
         Optional<PaymentSchedulerModel> paymentSchedulerModelOptional = paymentSchedulerService.findById(id);
@@ -84,10 +82,15 @@ public class PaymentSchedulerController {
         if (paymentSchedulerModelOptional.get().getStatus() == "paid") {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Payment has already been made");
         }
+
         var paymentSchedulerModel = paymentSchedulerModelOptional.get();
-        paymentSchedulerModel.setNamePayment(paymentSchedulerDto.getNamePayment());
-        paymentSchedulerModel.setSchedulingDate(paymentSchedulerDto.getSchedulingDate());
-        return ResponseEntity.status(HttpStatus.OK).body(paymentSchedulerService.save(paymentSchedulerModel));
+        if (paymentSchedulerDto.getNamePayment() != null) {
+            paymentSchedulerModel.setNamePayment(paymentSchedulerDto.getNamePayment());
+        }
+        if (paymentSchedulerDto.getSchedulingDate() != null) {
+            paymentSchedulerModel.setSchedulingDate(paymentSchedulerDto.getSchedulingDate());
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(paymentSchedulerService.update(paymentSchedulerModel));
     }
 
 }

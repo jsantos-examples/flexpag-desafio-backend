@@ -5,7 +5,6 @@ import org.springframework.stereotype.Component;
 
 import com.flexpag.paymentscheduler.models.PaymentSchedulerModel;
 import com.flexpag.paymentscheduler.repositories.PaymentSchedulerRepository;
-import com.flexpag.paymentscheduler.services.PaymentSchedulerService;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -21,7 +20,7 @@ public class PaymentSchedulerComponent {
         this.paymentSchedulerRepository = paymentSchedulerRepository;
     }
 
-    // verificar a data do agendamento e verificar o status
+    // verificar a data do agendamento e atualizar o status
     @Scheduled(fixedDelay = 5000)
     public void verifyScheduling() {
         
