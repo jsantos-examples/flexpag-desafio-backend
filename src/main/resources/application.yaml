@@ -13,6 +13,10 @@ spring:
     hibernate:
       ddl-auto: update
     properties:
+      spring:
+        mvc:
+          pathmatch:
+            matching-strategyant-path-matcherapplication: ant_path_matcher
       hibernate:
         format_sql: true
         show_sql: true
