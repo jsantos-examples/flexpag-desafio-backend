@@ -1,10 +1,11 @@
 package com.flexpag.paymentscheduler.repositories;
 
-import com.flexpag.paymentscheduler.models.PaymentSchedulerModel;
+import java.util.UUID;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.UUID;
+import com.flexpag.paymentscheduler.models.PaymentSchedulerModel;
 
 @Repository
 public interface PaymentSchedulerRepository extends JpaRepository<PaymentSchedulerModel, UUID> {

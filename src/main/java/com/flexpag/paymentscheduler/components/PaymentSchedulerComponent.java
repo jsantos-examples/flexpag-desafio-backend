@@ -1,13 +1,14 @@
 package com.flexpag.paymentscheduler.components;
 
-import com.flexpag.paymentscheduler.models.PaymentSchedulerModel;
-import com.flexpag.paymentscheduler.repositories.PaymentSchedulerRepository;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
-
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
+
+import com.flexpag.paymentscheduler.models.PaymentSchedulerModel;
+import com.flexpag.paymentscheduler.repositories.PaymentSchedulerRepository;
 
 @Component
 public class PaymentSchedulerComponent {
@@ -19,7 +20,7 @@ public class PaymentSchedulerComponent {
         this.paymentSchedulerRepository = paymentSchedulerRepository;
     }
 
-    // verificar a data do agendamento e atualizar o status
+    // verify scheduling and update status
     @Scheduled(fixedDelay = 5000)
     public void verifyScheduling() {
 

@@ -1,12 +1,14 @@
 package com.flexpag.paymentscheduler.dtos;
 
+import java.time.LocalDateTime;
+
+import javax.validation.constraints.NotBlank;
+
 import com.flexpag.paymentscheduler.constraints.LocalDateTimeInterface;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-
-import javax.validation.constraints.NotBlank;
-import java.time.LocalDateTime;
 
 
 @Data

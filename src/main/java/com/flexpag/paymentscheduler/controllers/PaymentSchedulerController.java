@@ -1,19 +1,34 @@
 package com.flexpag.paymentscheduler.controllers;
 
-import com.flexpag.paymentscheduler.dtos.PaymentSchedulerDto;
-import com.flexpag.paymentscheduler.dtos.PaymentSchedulerUpdateDto;
-import com.flexpag.paymentscheduler.models.PaymentSchedulerModel;
-import com.flexpag.paymentscheduler.services.PaymentSchedulerService;
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+
+import javax.validation.Valid;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
-import java.time.LocalDateTime;
-import java.util.*;
+import com.flexpag.paymentscheduler.dtos.*;
+import com.flexpag.paymentscheduler.models.PaymentSchedulerModel;
+import com.flexpag.paymentscheduler.services.PaymentSchedulerService;
 
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -62,7 +77,7 @@ public class PaymentSchedulerController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Object> updatePaymentScheduler(@PathVariable(value = "id") UUID id, @RequestBody @Valid PaymentSchedulerUpdateDto paymentSchedulerDto) {
+    public ResponseEntity<Object> updatePaymentScheduler(@PathVariable(value = "id") UUID id, @RequestBody @Valid PaymentSchedulerDto paymentSchedulerDto) {
         Optional<PaymentSchedulerModel> paymentSchedulerModelOptional = paymentSchedulerService.findById(id);
         if (!paymentSchedulerModelOptional.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Scheduling not found");

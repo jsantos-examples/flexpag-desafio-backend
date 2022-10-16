@@ -1,11 +1,12 @@
 package com.flexpag.paymentscheduler.validations;
 
-import com.flexpag.paymentscheduler.constraints.LocalDateTimeInterface;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
+
+import com.flexpag.paymentscheduler.constraints.LocalDateTimeInterface;
 
 public class LocalDateTimeValidation implements ConstraintValidator<LocalDateTimeInterface, LocalDateTime>{
 

@@ -30,4 +30,5 @@ public class PaymentSchedulerModel implements Serializable {
     @Column(nullable = false)
     private String status;
 
+
 }

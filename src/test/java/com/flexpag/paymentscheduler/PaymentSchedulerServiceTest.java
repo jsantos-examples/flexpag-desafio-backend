@@ -1,20 +1,21 @@
 package com.flexpag.paymentscheduler;
 
 
-import com.flexpag.paymentscheduler.models.PaymentSchedulerModel;
-import com.flexpag.paymentscheduler.repositories.PaymentSchedulerRepository;
-import com.flexpag.paymentscheduler.services.PaymentSchedulerService;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import com.flexpag.paymentscheduler.models.PaymentSchedulerModel;
+import com.flexpag.paymentscheduler.repositories.PaymentSchedulerRepository;
+import com.flexpag.paymentscheduler.services.PaymentSchedulerService;
 
 @DisplayName("PaymentSchedulerServiceTest")
 public class PaymentSchedulerServiceTest extends AplicationConfigTest {
