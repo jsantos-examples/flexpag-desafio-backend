@@ -1,6 +1,8 @@
 package com.flexpag.paymentscheduler;
 
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,15 +32,20 @@ public class PaymentSchedulerServiceTest extends AplicationConfigTest {
     @Test
     public void saveScheduling() {
         PaymentSchedulerModel paymentSchedulerModel = new PaymentSchedulerModel();
-        Mockito.when(paymentSchedulerRepository.save(paymentSchedulerModel)).thenReturn(createScheduling());
-        paymentSchedulerService.save(paymentSchedulerModel);
+        PaymentSchedulerModel returnModel = createScheduling();
+        Mockito.when(paymentSchedulerRepository.save(paymentSchedulerModel)).thenReturn(returnModel);
+        var result = paymentSchedulerService.save(paymentSchedulerModel);
+        
+        assertEquals(result, returnModel.getId());
     }
 
     @Test
     public void findAllScheduling() {
         List<PaymentSchedulerModel> list = new ArrayList<PaymentSchedulerModel>();
         Mockito.when(paymentSchedulerRepository.findAll()).thenReturn(list);
-        paymentSchedulerService.findAll();
+        var result = paymentSchedulerService.findAll();
+        
+        assertEquals(result, list);
     }
 
     @Test
@@ -48,7 +55,9 @@ public class PaymentSchedulerServiceTest extends AplicationConfigTest {
         Optional<PaymentSchedulerModel> paymentSchedulerModel = Optional.of(createScheduling());
         Mockito.when(paymentSchedulerRepository.findById(schedulingId)).thenReturn(paymentSchedulerModel);
 
-        paymentSchedulerService.findById(schedulingId);
+        var result = paymentSchedulerService.findById(schedulingId);
+        
+        assertEquals(result, paymentSchedulerModel);
     }
 
     @Test
@@ -61,8 +70,10 @@ public class PaymentSchedulerServiceTest extends AplicationConfigTest {
     @Test
     public void updateScheduling() {
         PaymentSchedulerModel paymentSchedulerModel = createScheduling();
-        Mockito.when(paymentSchedulerRepository.save(paymentSchedulerModel)).thenReturn(createScheduling());
-        paymentSchedulerService.update(paymentSchedulerModel);
+        Mockito.when(paymentSchedulerRepository.save(paymentSchedulerModel)).thenReturn(paymentSchedulerModel);
+        var result = paymentSchedulerService.update(paymentSchedulerModel);
+        
+        assertEquals(result, paymentSchedulerModel);
     }
 
     private PaymentSchedulerModel createScheduling() {
