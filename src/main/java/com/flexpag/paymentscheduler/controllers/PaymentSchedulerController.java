@@ -26,7 +26,7 @@ public class PaymentSchedulerController {
     }
 
     @PostMapping
-    public ResponseEntity<Object> savePayment(@RequestBody @Valid PaymentSchedulerDto paymentSchedulerDto) {
+    public ResponseEntity<UUID> savePayment(@RequestBody @Valid PaymentSchedulerDto paymentSchedulerDto) {
         var paymentSchedulerModel = new PaymentSchedulerModel();
         BeanUtils.copyProperties(paymentSchedulerDto, paymentSchedulerModel);
         paymentSchedulerModel.setCreated_at(LocalDateTime.now());

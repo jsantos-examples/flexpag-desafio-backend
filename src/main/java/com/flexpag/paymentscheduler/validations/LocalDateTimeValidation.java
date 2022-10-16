@@ -18,10 +18,6 @@ public class LocalDateTimeValidation implements ConstraintValidator<LocalDateTim
     @Override
     public boolean isValid(LocalDateTime localDateTime, ConstraintValidatorContext constraintValidatorContext) {
 
-        if (String.valueOf(localDateTime).matches("^(\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2})$") == false) {
-            return false;
-        }
-
         if (localDateTime == null) {
             return false;
         }
