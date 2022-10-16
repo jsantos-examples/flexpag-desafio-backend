@@ -83,31 +83,12 @@ spring:
 ```
 
 ### :notebook: To-do list
-- [X] Fazer o fork do projeto
-- [X] Implementar solução
-- [X] Enviar link do projeto
+- [ ] Fazer o fork do projeto
+- [ ] Implementar solução
+- [ ] Enviar link do projeto
 
 :information_source: _Sinta-se livre para incluir quaisquer observações que achar necessário_
 
 ---
 
 _O desafio acima foi cuidadosamente construído para propósitos de avaliação apenas._
-
-
-
-
-# Observações sobre o projeto:
-
->### Este projeto foi desenvolvido com [Docker](https://www.docker.com/) então ao iniciar o projeto digite:
-
-    Criando imagem: docker build -t spring-app .
-    
-    Rodando a imagem: docoker run -p 8080:8080 spring-app
-
----
->### Antes de fazer qualquer requisição no projeto consulte a documentação:
-   
-    http://localhost:8080/swagger-ui/index.html#/payment-scheduler-controller
-
----
->### Certifique-se de que o projeto esta rodando antes de acessar a documentação.
