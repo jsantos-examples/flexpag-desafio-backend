@@ -105,7 +105,7 @@ _O desafio acima foi cuidadosamente construído para propósitos de avaliação 
     Rodando a imagem: docoker run -p 8080:8080 spring-app
 
 ---
->### Antes de fazer qualquer requisão no projeto consulte a documentação:
+>### Antes de fazer qualquer requisição no projeto consulte a documentação:
    
     http://localhost:8080/swagger-ui/index.html#/payment-scheduler-controller
 
