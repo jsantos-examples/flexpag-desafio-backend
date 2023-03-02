@@ -19,7 +19,6 @@ public class Payment {
     private Long id;
     private String client;
     private Double amount;
-    @Column(name = "payment_status")
     private PaymentStatus paymentStatus;
     private LocalDateTime payDate;
 
