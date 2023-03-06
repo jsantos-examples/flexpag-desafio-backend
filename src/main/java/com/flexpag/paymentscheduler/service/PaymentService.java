@@ -25,11 +25,6 @@ public class PaymentService {
 		return paymentRepository.findById(id);
 	}
 
-	public List<PaymentModel> getByStatus(int status) {
-		PaymentStatus paymentStatus = PaymentStatus.valueOf(status);
-		return paymentRepository.findByStatus(paymentStatus);
-	}
-
 	public PaymentModel postSchedule(PaymentModel payment) {
 		if (payment.getPaymentDate().isBefore(Instant.now())) {
 			throw new IllegalArgumentException();
@@ -56,4 +51,6 @@ public class PaymentService {
 		}
 		throw new IllegalArgumentException();
 	}
+
+	
 }

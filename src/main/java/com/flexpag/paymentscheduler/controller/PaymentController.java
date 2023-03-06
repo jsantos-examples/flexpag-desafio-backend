@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.flexpag.paymentscheduler.model.PaymentModel;
+import com.flexpag.paymentscheduler.model.status.PaymentStatus;
+import com.flexpag.paymentscheduler.repository.PaymentRepository;
 import com.flexpag.paymentscheduler.service.PaymentService;
 
 @RestController
@@ -24,7 +26,9 @@ public class PaymentController {
 
 	@Autowired
 	private PaymentService paymentService;
-
+	@Autowired
+	private PaymentRepository paymentRepository;
+	
 	@GetMapping
 	public ResponseEntity<List<PaymentModel>> getAll() {
 		List<PaymentModel> payments = paymentService.getAll();
@@ -39,12 +43,9 @@ public class PaymentController {
 
 	@GetMapping("/status/{status}")
 	public ResponseEntity<List<PaymentModel>> getByStatus(@PathVariable int status) {
-		List<PaymentModel> paymentStatus = paymentService.getByStatus(status);
-		if (paymentStatus.isEmpty()) {
-			return ResponseEntity.notFound().build();
-		} else {
-			return ResponseEntity.ok(paymentStatus);
-		}
+		PaymentStatus paymentStatus = PaymentStatus.valueOf(status);
+		List<PaymentModel> payments = paymentRepository.findByStatus(paymentStatus);
+		return ResponseEntity.ok(payments);
 	}
 
 	@PostMapping
