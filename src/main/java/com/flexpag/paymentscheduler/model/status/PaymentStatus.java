@@ -11,7 +11,7 @@ public enum PaymentStatus {
 		this.code = code;
 	}
 	
-	// Gettere setters
+	// Getters e setters
 
 	public int getCode() {
 		return code;
@@ -21,7 +21,6 @@ public enum PaymentStatus {
 		this.code = code;
 	}
 
-	// static para acessar 
 	public static PaymentStatus valueOf (int code) {
 		for (PaymentStatus value : PaymentStatus.values()) {
 			if (code == value.getCode()) {

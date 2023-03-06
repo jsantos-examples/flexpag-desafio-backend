@@ -1,11 +1,8 @@
 package com.flexpag.paymentscheduler.controller;
 
-import java.time.Instant;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,8 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.flexpag.paymentscheduler.model.PaymentModel;
-import com.flexpag.paymentscheduler.model.status.PaymentStatus;
-import com.flexpag.paymentscheduler.repository.PaymentRepository;
+import com.flexpag.paymentscheduler.service.PaymentService;
 
 @RestController
 @RequestMapping("/payments")
@@ -27,84 +23,51 @@ import com.flexpag.paymentscheduler.repository.PaymentRepository;
 public class PaymentController {
 
 	@Autowired
-	private PaymentRepository repository;
+	private PaymentService paymentService;
 
 	@GetMapping
-	public ResponseEntity<List<PaymentModel>> GetAll() {
-		return ResponseEntity.ok(repository.findAll());
+	public ResponseEntity<List<PaymentModel>> getAll() {
+		List<PaymentModel> payments = paymentService.getAll();
+		return ResponseEntity.ok(payments);
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<PaymentModel> GetById(@PathVariable long id) {
-		return repository.findById(id).map(resp -> ResponseEntity.ok(resp)).orElse(ResponseEntity.notFound().build());
+	public ResponseEntity<PaymentModel> getById(@PathVariable long id) {
+		return paymentService.getById(id).map(resp -> ResponseEntity.ok(resp))
+				.orElse(ResponseEntity.notFound().build());
 	}
 
 	@GetMapping("/status/{status}")
 	public ResponseEntity<List<PaymentModel>> getByStatus(@PathVariable int status) {
-		PaymentStatus paymentStatus = PaymentStatus.valueOf(status);
-		List<PaymentModel> payments = repository.findByStatus(paymentStatus);
-		return ResponseEntity.ok(payments);
+		List<PaymentModel> paymentStatus = paymentService.getByStatus(status);
+		if (paymentStatus.isEmpty()) {
+			return ResponseEntity.notFound().build();
+		} else {
+			return ResponseEntity.ok(paymentStatus);
+		}
 	}
 
 	@PostMapping
-	public ResponseEntity<PaymentModel> save(@RequestBody PaymentModel payment) {
-		if (payment.getPaymentDate().isBefore(Instant.now()) || payment.getPaymentDate().equals(Instant.now())) {
-			return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+	public ResponseEntity<PaymentModel> post(@RequestBody PaymentModel payment) {
+		if (paymentService.postSchedule(payment) == null) {
+			return ResponseEntity.badRequest().build();
 		}
-
-		else {
-			payment.setStatus(PaymentStatus.PENDING);
-			PaymentModel savedPayment = repository.save(payment);
-			savedPayment.setId(savedPayment.getId());
-			return ResponseEntity.status(HttpStatus.OK).body(savedPayment);
-		}
+		return ResponseEntity.ok(payment);
 	}
 
 	@PutMapping("/{id}")
 	public ResponseEntity<PaymentModel> update(@PathVariable Long id, @RequestBody PaymentModel payment) {
-		Optional<PaymentModel> paymentData = repository.findById(id);
-
-		if (paymentData.isEmpty()) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-		}
-
-		PaymentModel paymentUpdate = paymentData.get();
-
-		if (paymentUpdate.getStatus() == PaymentStatus.PAID || payment.getPaymentDate().isBefore(Instant.now())) {
-			return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-		}
-
-		else if (paymentUpdate.getStatus() == PaymentStatus.PENDING) {
-			if (payment.getPaymentDate().isAfter(Instant.now())) {
-				paymentUpdate.setPaymentDate(payment.getPaymentDate());
-				paymentUpdate.setStatus(PaymentStatus.PENDING);
-				return ResponseEntity.ok(repository.save(paymentUpdate));
-			} else {
-				return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-			}
-		}
-
-		else {
-			return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-		}
+		PaymentModel updatedPayment = paymentService.updateSchedule(id, payment);
+		return ResponseEntity.ok(updatedPayment);
 	}
 
 	@DeleteMapping("/{id}")
-	public ResponseEntity<?> delete(@PathVariable Long id) {
-		Optional<PaymentModel> paymentData = repository.findById(id);
-
-		if (paymentData.isEmpty()) {
-			return ResponseEntity.notFound().build();
-		}
-		
-		PaymentModel payment = paymentData.get();
-		
-		if (payment.getStatus() == PaymentStatus.PENDING) {
-			repository.deleteById(id);
-			return ResponseEntity.ok().build();
-		}
-		else {
-			return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+	public ResponseEntity<PaymentModel> delete(@PathVariable Long id) {
+		try {
+			PaymentModel deletePayment = paymentService.deleteSchedule(id);
+			return ResponseEntity.ok(deletePayment);
+		} catch (IllegalArgumentException e) {
+			return ResponseEntity.badRequest().build();
 		}
 	}
 }
