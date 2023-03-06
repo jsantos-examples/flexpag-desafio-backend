@@ -39,52 +39,54 @@ public class PaymentController {
 		return repository.findById(id).map(resp -> ResponseEntity.ok(resp)).orElse(ResponseEntity.notFound().build());
 	}
 
+	@GetMapping("/status/{status}")
+	public ResponseEntity<List<PaymentModel>> getByStatus(@PathVariable int status) {
+		PaymentStatus paymentStatus = PaymentStatus.valueOf(status);
+		List<PaymentModel> payments = repository.findByStatus(paymentStatus);
+		return ResponseEntity.ok(payments);
+	}
+
 	@PostMapping
 	public ResponseEntity<PaymentModel> save(@RequestBody PaymentModel payment) {
-		if (payment.getPaymentDate().equals(Instant.now())) {
-			payment.setStatus(PaymentStatus.PAID);
-			System.out.println("O pagamento foi realizado hoje.");
-		}
-
-		else if (payment.getPaymentDate().isBefore(Instant.now())) {
+		if (payment.getPaymentDate().isBefore(Instant.now()) || payment.getPaymentDate().equals(Instant.now())) {
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
 		}
 
 		else {
 			payment.setStatus(PaymentStatus.PENDING);
-			System.out.println("O pagamento foi agendado.");
+			PaymentModel savedPayment = repository.save(payment);
+			savedPayment.setId(savedPayment.getId());
+			return ResponseEntity.status(HttpStatus.OK).body(savedPayment);
 		}
-
-		return ResponseEntity.status(HttpStatus.CREATED).body(repository.save(payment));
 	}
-	
+
 	@PutMapping("/{id}")
 	public ResponseEntity<PaymentModel> update(@PathVariable Long id, @RequestBody PaymentModel payment) {
-	    Optional<PaymentModel> paymentData = repository.findById(id);
+		Optional<PaymentModel> paymentData = repository.findById(id);
 
-	    if (paymentData.isEmpty()) {
-	        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-	    }
+		if (paymentData.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		}
 
-	    PaymentModel paymentUpdate = paymentData.get();
-	    
-	    if (paymentUpdate.getStatus() == PaymentStatus.PAID && payment.getPaymentDate().isBefore(Instant.now())) {
-	        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-	    } 
-	    
-	    else if (paymentUpdate.getStatus() == PaymentStatus.PENDING) {
-	        if (payment.getPaymentDate().isAfter(Instant.now())) {
-	            paymentUpdate.setPaymentDate(payment.getPaymentDate());
-	            paymentUpdate.setStatus(PaymentStatus.PENDING);
-	            return ResponseEntity.ok(repository.save(paymentUpdate));
-	        } else {
-	            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-	        }
-	    } 
-	    
-	    else {
-	        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-	    }
+		PaymentModel paymentUpdate = paymentData.get();
+
+		if (paymentUpdate.getStatus() == PaymentStatus.PAID || payment.getPaymentDate().isBefore(Instant.now())) {
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+		}
+
+		else if (paymentUpdate.getStatus() == PaymentStatus.PENDING) {
+			if (payment.getPaymentDate().isAfter(Instant.now())) {
+				paymentUpdate.setPaymentDate(payment.getPaymentDate());
+				paymentUpdate.setStatus(PaymentStatus.PENDING);
+				return ResponseEntity.ok(repository.save(paymentUpdate));
+			} else {
+				return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+			}
+		}
+
+		else {
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+		}
 	}
 
 	@DeleteMapping("/{id}")
@@ -106,4 +108,3 @@ public class PaymentController {
 		}
 	}
 }
-
