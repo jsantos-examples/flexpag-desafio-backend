@@ -16,3 +16,7 @@ spring:
       hibernate:
         format_sql: true
         show_sql: true
+      hibernate.jdbc.lob.non_contextual_creation: true
+  mvc:
+    path match:
+      matching-strategy: ant_path_matcher
