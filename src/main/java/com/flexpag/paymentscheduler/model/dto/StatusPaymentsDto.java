@@ -57,6 +57,7 @@ public class StatusPaymentsDto implements Serializable {
 		super();
 		this.id = id;
 		this.status = status;
+		
 	}
 
 	public StatusPaymentsDto(Long id, @NonNull Status status, LocalDateTime date) {
