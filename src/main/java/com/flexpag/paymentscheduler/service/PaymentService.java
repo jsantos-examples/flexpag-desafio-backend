@@ -25,32 +25,47 @@ public class PaymentService {
 		return paymentRepository.findById(id);
 	}
 
+	public List<PaymentModel> getByStatus(int status) {
+		return paymentRepository.findByStatus(status);
+
+	}
+
 	public PaymentModel postSchedule(PaymentModel payment) {
-		if (payment.getPaymentDate().isBefore(Instant.now())) {
-			throw new IllegalArgumentException();
-		} else {
+		if (payment.getPaymentDate().isAfter(Instant.now())) {
 			payment.setStatus(PaymentStatus.PENDING);
 			return paymentRepository.save(payment);
+		} else {
+			throw new IllegalArgumentException();
 		}
 	}
 
 	public PaymentModel updateSchedule(Long id, PaymentModel payment) {
 		Optional<PaymentModel> paymentId = paymentRepository.findById(id);
-		PaymentModel scheduleUpdate = paymentId.get();
-		if (payment.getPaymentDate().isAfter(Instant.now())) {
-			scheduleUpdate.setPaymentDate(payment.getPaymentDate());
-			return paymentRepository.save(scheduleUpdate);
+		if (paymentId.isPresent()) {
+			PaymentModel paymentUpdate = paymentId.get();
+			if (payment.getPaymentDate().isAfter(Instant.now())) {
+				paymentUpdate.setPaymentDate(payment.getPaymentDate());
+				return paymentRepository.save(paymentUpdate);
+			} else {
+				throw new IllegalArgumentException();
+			}
+		} else {
+			throw new IllegalArgumentException();
 		}
-		throw new IllegalArgumentException();
 	}
 
-	public PaymentModel deleteSchedule(Long id) {
+	public void deleteSchedule(Long id) {
 		Optional<PaymentModel> paymentId = paymentRepository.findById(id);
-		if (paymentId.get().getStatus() == PaymentStatus.PENDING) {
-			paymentRepository.deleteById(id);
+		if (paymentId.isPresent()) {
+			PaymentModel schedule = paymentId.get();
+			if (schedule.getStatus() == PaymentStatus.PENDING) {
+				paymentRepository.deleteById(id);
+			} else {
+				throw new IllegalArgumentException();
+			}
+		} else {
+			throw new IllegalArgumentException();
 		}
-		throw new IllegalArgumentException();
 	}
 
-	
 }

@@ -27,7 +27,7 @@ public enum PaymentStatus {
 				return value;
 			}				
 		}
-		throw new IllegalArgumentException("Invalid Payment Status code");
+		throw new IllegalArgumentException();
 	}
 		
 }

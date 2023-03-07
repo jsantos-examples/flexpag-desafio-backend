@@ -1,5 +1,6 @@
 package com.flexpag.paymentscheduler.controller;
 
+import java.time.Instant;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.flexpag.paymentscheduler.model.PaymentModel;
 import com.flexpag.paymentscheduler.model.status.PaymentStatus;
-import com.flexpag.paymentscheduler.repository.PaymentRepository;
 import com.flexpag.paymentscheduler.service.PaymentService;
 
 @RestController
@@ -26,9 +26,7 @@ public class PaymentController {
 
 	@Autowired
 	private PaymentService paymentService;
-	@Autowired
-	private PaymentRepository paymentRepository;
-	
+
 	@GetMapping
 	public ResponseEntity<List<PaymentModel>> getAll() {
 		List<PaymentModel> payments = paymentService.getAll();
@@ -43,32 +41,41 @@ public class PaymentController {
 
 	@GetMapping("/status/{status}")
 	public ResponseEntity<List<PaymentModel>> getByStatus(@PathVariable int status) {
-		PaymentStatus paymentStatus = PaymentStatus.valueOf(status);
-		List<PaymentModel> payments = paymentRepository.findByStatus(paymentStatus);
-		return ResponseEntity.ok(payments);
+		List<PaymentModel> statusPayment = paymentService.getByStatus(status);
+		return ResponseEntity.ok(statusPayment);
 	}
 
 	@PostMapping
 	public ResponseEntity<PaymentModel> post(@RequestBody PaymentModel payment) {
-		if (paymentService.postSchedule(payment) == null) {
+		if (payment.getPaymentDate().isAfter(Instant.now())) {
+			payment.setStatus(PaymentStatus.PENDING);
+			PaymentModel savedPayment = paymentService.postSchedule(payment);
+			return ResponseEntity.ok(savedPayment);
+		} else {
 			return ResponseEntity.badRequest().build();
 		}
-		return ResponseEntity.ok(payment);
 	}
 
 	@PutMapping("/{id}")
 	public ResponseEntity<PaymentModel> update(@PathVariable Long id, @RequestBody PaymentModel payment) {
-		PaymentModel updatedPayment = paymentService.updateSchedule(id, payment);
-		return ResponseEntity.ok(updatedPayment);
+		try {
+			PaymentModel updatedPayment = paymentService.updateSchedule(id, payment);
+			return ResponseEntity.ok(updatedPayment);
+		} catch (IllegalArgumentException e) {
+			return ResponseEntity.badRequest().build();
+		} catch (Exception e) {
+			return ResponseEntity.internalServerError().build();
+		}
 	}
 
 	@DeleteMapping("/{id}")
-	public ResponseEntity<PaymentModel> delete(@PathVariable Long id) {
+	public ResponseEntity<?> deleteSchedule(@PathVariable Long id) {
 		try {
-			PaymentModel deletePayment = paymentService.deleteSchedule(id);
-			return ResponseEntity.ok(deletePayment);
+			paymentService.deleteSchedule(id);
+			return ResponseEntity.ok().build();
 		} catch (IllegalArgumentException e) {
 			return ResponseEntity.badRequest().build();
 		}
 	}
+
 }
